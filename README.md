@@ -1,6 +1,6 @@
 # openvpntemplate
 Scripts to downloads install and configure openvpn server
 
-For usage:
-chmod +x installer.sh
-./installer.sh
+For use:<br>
+chmod +x installer.sh<br>
+./installer.sh<br>
