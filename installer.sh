@@ -20,6 +20,11 @@ fi
 #get VARs
 read -p "Server public ip address:" SERVER_IP;
 
+read -p "Server SSH port (default 22):" SSH_PORT;
+if [[ "$SSH_PORT" == "" ]];then
+        SSH_PORT=22;
+fi
+
 read -p "Server public port (default 1194):" SERVER_PORT;
 if [[ "$SERVER_PORT" == "" ]];then
         SERVER_PORT=1194;
@@ -38,6 +43,7 @@ fi
 #check VARs
 echo "Check VARs:";
 echo "Server public ip address:" $SERVER_IP;
+echo "Server SSH port:" $SSH_PORT;
 echo "Server public port:" $SERVER_PORT;
 echo "Server vpn users IP network:" $SERVER_VPN_LAN;
 echo "Server LAN IP network:" $SERVER_LAN;
@@ -60,12 +66,13 @@ yum remove firewalld -y && yum install iptables-services -y
 
 #write data to example iptables file and move it
 sed -i "s/SERVER_PORT/$SERVER_PORT/" iptables;
+sed -i "s/SSH_PORT/$SSH_PORT/" iptables;
 cp iptables /etc/sysconfig/iptables;
 systemctl enable iptables;
 
 #change ssh port
-sed -i 's/#Port 22/Port 65000/' /etc/ssh/sshd_config;
-sed -i 's/Port 22/Port 65000/' /etc/ssh/sshd_config;
+sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config;
+sed -i "s/Port 22/Port $SSH_PORT/" /etc/ssh/sshd_config;
 
 #install pachedges
 yum install epel-release -y;
