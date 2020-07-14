@@ -3,6 +3,7 @@
 
 VERSION_FILE=/etc/ovpninfo
 VERSION="1.0"
+current_dir=$(pwd)
 
 #check root
 if [[ "$UID" != "0" ]];then
@@ -54,3 +55,64 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config;
 #stop and disable firewalld
 systemctl stop firewalld.service && systemctl disable firewalld.service
 
+#remove firewalld and install iptables-services
+yum remove firewalld -y && yum install iptables-services -y
+
+#write data to example iptables file and move it
+sed -i "s/SERVER_PORT/$SERVER_PORT/" iptables;
+cp iptables /etc/sysconfig/iptables;
+systemctl enable iptables;
+
+#change ssh port
+sed -i 's/#Port 22/Port 65000/' /etc/ssh/sshd_config;
+sed -i 's/Port 22/Port 65000/' /etc/ssh/sshd_config;
+
+#install pachedges
+yum install epel-release -y;
+yum install openvpn htop wget unzip -y;
+systemctl enable openvpn-server@server;
+
+#install easy-rsa
+cd /tmp;
+wget https://github.com/OpenVPN/easy-rsa/archive/master.zip;
+unzip master.zip;
+cp -a easy-rsa-master/easyrsa3 /etc/openvpn/easy-rsa;
+
+#back to installer dir and move oVPN vars file
+cd $current_dir;
+mv vars /etc/openvpn/easy-rsa/vars;
+
+#create needs directory
+mkdir /etc/openvpn/ccd
+mkdir /etc/openvpn/clients
+mkdir /etc/openvpn/scripts
+rm -rf /etc/openvpn/client
+
+#move scripts file and give him exec
+mv deluser.sh newuser.sh /etc/openvpn/scripts/
+chmod u+x /etc/openvpn/scripts/*
+
+#move cfg file
+mv server.conf /etc/openvpn/server/server.conf;
+mv template-client.conf /etc/openvpn/template-client.conf;
+
+#gen CA certs tls etc
+cd /etc/openvpn;
+./easy-rsa/easyrsa init-pki;
+./easy-rsa/easyrsa build-ca nopass;
+./easy-rsa/easyrsa gen-dh;
+openvpn --genkey --secret pki/ta.key;
+./easy-rsa/easyrsa build-server-full ovpn nopass;
+./easy-rsa/easyrsa gen-crl;
+
+#enable forwarding and configure swap
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf;
+echo "vm.swappiness=1" >> /etc/sysctl.conf;
+sysctl -p;
+
+echo "Install date:" >> $VERSION_FILE;
+echo $(date) >> $VERSION_FILE;
+echo "Version:" >> $VERSION_FILE;
+echo $VERSION >> $VERSION_FILE;
+
+echo "Install is done. Reboot server."
