@@ -104,7 +104,6 @@ mv template-client.conf /etc/openvpn/template-client.conf;
 cd /etc/openvpn;
 ./easy-rsa/easyrsa init-pki;
 ./easy-rsa/easyrsa build-ca nopass;
-echo -en "\n\n";
 ./easy-rsa/easyrsa gen-dh;
 openvpn --genkey --secret pki/ta.key;
 ./easy-rsa/easyrsa build-server-full ovpn nopass;
