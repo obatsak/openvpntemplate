@@ -2,7 +2,7 @@
 
 
 VERSION_FILE=/etc/ovpninfo
-VERSION="1.0"
+VERSION="1.0-centos8"
 current_dir=$(pwd)
 
 #check root
