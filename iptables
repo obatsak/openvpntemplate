@@ -3,7 +3,7 @@
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 65000 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport SSH_PORT -j ACCEPT
 -A INPUT -p udp -m state --state NEW -m udp --dport SERVER_PORT -j ACCEPT
 -A INPUT -i ens192 -j DROP
 
