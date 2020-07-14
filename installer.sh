@@ -93,6 +93,10 @@ mv deluser.sh newuser.sh /etc/openvpn/scripts/
 chmod u+x /etc/openvpn/scripts/*
 
 #move cfg file
+sed -i "s/remote SERVER_IP SERVER_PORT/remote $SERVER_IP $SERVER_PORT/" template-client.conf;
+sed -i "s/port 1194/port $SERVER_PORT/" server.conf;
+sed -i "s/server 10.1.0.0 255.255.255.0/server $SERVER_VPN_LAN/" server.conf;
+sed -i "s/push \"route 10.6.86.0 255.255.255.0\"/push \"route $SERVER_LAN\"/" server.conf;
 mv server.conf /etc/openvpn/server/server.conf;
 mv template-client.conf /etc/openvpn/template-client.conf;
 
