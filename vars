@@ -1,0 +1,9 @@
+set_var EASYRSA_REQ_COUNTRY    "RU"
+set_var EASYRSA_REQ_PROVINCE    "RU"
+set_var EASYRSA_REQ_CITY    "Default City"
+set_var EASYRSA_REQ_ORG    "SomeCompany.org"
+set_var EASYRSA_REQ_EMAIL    "admin@admin.org"
+set_var EASYRSA_REQ_OU        "IT"
+set_var EASYRSA_KEY_SIZE    4096
+set_var EASYRSA_ALGO        rsa
+set_var EASYRSA_DIGEST        "sha256"
