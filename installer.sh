@@ -2,7 +2,7 @@
 
 
 VERSION_FILE=/etc/ovpninfo
-VERSION="1.0"
+VERSION="1.0-debian10"
 current_dir=$(pwd)
 
 #check root
@@ -54,30 +54,22 @@ if [[ "$vars_true" != "y" ]];then
         exit 1;
 fi
 
-#disable selinux
-setenforce 0;
-sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config;
 
-#stop and disable firewalld
-systemctl stop firewalld.service && systemctl disable firewalld.service
-
-#remove firewalld and install iptables-services
-yum remove firewalld -y && yum install iptables-services -y
+#install pachedges
+apt install openvpn htop wget unzip htop vim wget net-tools curl sudo git iptables-persistent -y;
+systemctl enable openvpn-server@server;
+cp iptables /etc/iptables/rules.v4;
 
 #write data to example iptables file and move it
 sed -i "s/SERVER_PORT/$SERVER_PORT/" iptables;
 sed -i "s/SSH_PORT/$SSH_PORT/" iptables;
-cp iptables /etc/sysconfig/iptables;
-systemctl enable iptables;
+
+
 
 #change ssh port
 sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config;
 sed -i "s/Port 22/Port $SSH_PORT/" /etc/ssh/sshd_config;
 
-#install pachedges
-yum install epel-release -y;
-yum install openvpn htop wget unzip -y;
-systemctl enable openvpn-server@server;
 
 #install easy-rsa
 cd /tmp;
