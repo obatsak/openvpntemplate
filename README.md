@@ -1,5 +1,5 @@
 # openvpntemplate
-Version 1.0.
+Version 1.0-debian10.
 
 Scripts to downloads install and configure openvpn server. 
 
