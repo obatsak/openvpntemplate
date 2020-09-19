@@ -58,12 +58,12 @@ fi
 #install pachedges
 apt install openvpn htop wget unzip htop vim wget net-tools curl sudo git iptables-persistent -y;
 systemctl enable openvpn-server@server;
-cp iptables /etc/iptables/rules.v4;
+
 
 #write data to example iptables file and move it
 sed -i "s/SERVER_PORT/$SERVER_PORT/" iptables;
 sed -i "s/SSH_PORT/$SSH_PORT/" iptables;
-
+cp iptables /etc/iptables/rules.v4;
 
 
 #change ssh port
