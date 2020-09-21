@@ -53,7 +53,7 @@ fi
 
 # copy and customize the client configuration
 echo "Copy and customize the client configuration..."
-cp "/etc/openvpn/template-client.conf" "${DIR_CLIENT}/$1.ovpn"
+cp "/etc/openvpn/template-client" "${DIR_CLIENT}/$1.ovpn"
 
 if [ "$?" != "0" ]; then
     echo "Error.";
